@@ -12,6 +12,7 @@ public class QueueFactory {
 
    /**
     * Creates an instance of QueueInterface for Integer type.
+    *
     * @param capacity Number of elements the queue can hold.
     * @return The queue object.
     */
@@ -20,7 +21,7 @@ public class QueueFactory {
       // - Instantiates your queue implementation using Integer as template parameter, 
       //   with the given capacity,
       // - and return the object to the caller.
-      
+      return new QueueImplementation<>(capacity);
    }
 
    /**
