@@ -2,18 +2,22 @@ package oy.tol.tra;
 
 import java.util.Arrays;
 
-public class QueueImplementation<SS> implements QueueInterface<SS> {
+public class QueueImplementation<T> implements QueueInterface<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
+    private T[] elements;
     private int size;
     private int capacity;
-    private SS[] elements;
+    private int head; // Points to the front of the queue
+    private int tail; // Points to the next available position at the end of the queue
 
     @SuppressWarnings("unchecked")
     public QueueImplementation(int capacity) {
         this.capacity = capacity > 0 ? capacity : DEFAULT_CAPACITY;
-        this.elements = (SS[]) new Object[this.capacity];
+        this.elements = (T[]) new Object[this.capacity];
         this.size = 0;
+        this.head = 0;
+        this.tail = 0;
     }
 
     public QueueImplementation() {
@@ -21,32 +25,36 @@ public class QueueImplementation<SS> implements QueueInterface<SS> {
     }
 
     @Override
-    public void enqueue(SS element) {
+    public void enqueue(T element) {
         if (element == null) {
-            throw new NullPointerException("Can not add null element to the queue");
+            throw new NullPointerException("Cannot add null element to the queue.");
         }
         if (size == capacity) {
             reallocate();
         }
-        elements[size++] = element;
+        elements[tail] = element;
+        tail = (tail + 1) % capacity;
+        size++;
     }
 
     @Override
-    public SS dequeue() {
+    public T dequeue() {
         if (isEmpty()) {
-            throw new QueueIsEmptyException("Queue is empty can not dequeue");
+            throw new QueueIsEmptyException("Queue is empty, cannot dequeue.");
         }
-        SS element = elements[0];
-        System.arraycopy(elements, 1, elements, 0, --size);
+        T element = elements[head];
+        elements[head] = null; // Clear the reference
+        head = (head + 1) % capacity;
+        size--;
         return element;
     }
 
     @Override
-    public SS element() {
+    public T element() {
         if (isEmpty()) {
-            throw new QueueIsEmptyException("Queue is empty can not retrieve element");
+            throw new QueueIsEmptyException("Queue is empty, cannot retrieve element.");
         }
-        return elements[0];
+        return elements[head];
     }
 
     @Override
@@ -61,8 +69,12 @@ public class QueueImplementation<SS> implements QueueInterface<SS> {
 
     @Override
     public void clear() {
-        Arrays.fill(elements, null);
+        for (int i = 0; i < size; i++) {
+            elements[(head + i) % capacity] = null;
+        }
         size = 0;
+        head = 0;
+        tail = 0;
     }
 
     @Override
@@ -73,16 +85,20 @@ public class QueueImplementation<SS> implements QueueInterface<SS> {
     @SuppressWarnings("unchecked")
     private void reallocate() {
         capacity *= 2;
-        SS[] newArray = (SS[]) new Object[capacity];
-        System.arraycopy(elements, 0, newArray, 0, size);
+        T[] newArray = (T[]) new Object[capacity];
+        for (int i = 0; i < size; i++) {
+            newArray[i] = elements[(head + i) % (size)];
+        }
         elements = newArray;
+        head = 0;
+        tail = size;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < size; i++) {
-            sb.append(elements[i]);
+            sb.append(elements[(head + i) % capacity]);
             if (i < size - 1) {
                 sb.append(", ");
             }
