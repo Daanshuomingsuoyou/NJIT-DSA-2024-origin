@@ -2,36 +2,34 @@ package oy.tol.tra;
 
 public class Algorithms {
     // 冒泡排序
-    public static <T extends Comparable<T>> void sort(T [] array) {
-        boolean swapped = false;
+    public static <SS extends Comparable<SS>> void sort(SS[] array) {
+// implementation here...
+
         for (int i = 0; i < array.length - 1; i++) {
             for (int j = 0; j < array.length - i - 1; j++) {
                 if (array[j].compareTo(array[j + 1]) > 0) {
-                    T temp = array[j];
+                    SS temp = array[j];
                     array[j] = array[j + 1];
                     array[j + 1] = temp;
-                    swapped = true;
                 }
-            }
-            if (!swapped) {
-                break;
             }
         }
     }
 
-    // 选择排序
-    public static <T> void reverse(T [] array)  {
+    // ...
+    public static <SS> void reverse(SS[] array) {
+// implementation here...
         int start = 0;
         int end = array.length - 1;
         while (start < end) {
-            T temp = array[start];
+            SS temp = array[start];
             array[start] = array[end];
             array[end] = temp;
             start++;
             end--;
         }
-    }
 
+    }
     // 插入排序
     public static <T extends Comparable<T>> int binarySearch(T aValue, T [] fromArray, int fromIndex, int toIndex)  {
         while (fromIndex <= toIndex) {
